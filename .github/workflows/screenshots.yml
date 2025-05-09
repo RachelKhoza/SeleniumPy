@@ -1,0 +1,46 @@
+name: AAP Sidebar Screenshot
+
+on:
+  workflow_dispatch:
+    inputs:
+      section:
+        description: 'Sidebar section to capture (e.g., Billing, Dashboard, Tables)'
+        required: true
+        default: 'Billing'
+
+jobs:
+  capture-screenshot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install selenium
+
+      - name: Install Chrome and Chromedriver
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt install -y ./google-chrome-stable_current_amd64.deb
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+' | head -1)
+          wget https://chromedriver.storage.googleapis.com/$(google-chrome --version | grep -oP '\d+\.\d+\.\d+' | head -1)/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          sudo mv chromedriver /usr/bin/chromedriver
+          sudo chmod +x /usr/bin/chromedriver
+
+      - name: Run Selenium script for section ${{ github.event.inputs.section }}
+        run: python sidebar_screenshot.py "${{ github.event.inputs.section }}"
+
+      - name: Upload screenshot artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshot
+          path: screenshots/
