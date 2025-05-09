@@ -1,6 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+import chromedriver_autoinstaller
+
 import os
 import time
 import sys
@@ -13,6 +15,8 @@ options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 
+
+chromedriver_autoinstaller.install()
 driver = webdriver.Chrome(options=options)
 driver.set_window_size(1280, 1024)
 
