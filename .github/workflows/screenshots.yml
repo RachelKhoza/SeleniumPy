@@ -25,7 +25,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run Selenium script for ${{ github.event.inputs.section }}
-        run: python sidebar_screenshot.py "${{ github.event.inputs.section }}"
+        run: python selpy2.py "${{ github.event.inputs.section }}"
 
       - name: Upload screenshot artifact
         uses: actions/upload-artifact@v4
